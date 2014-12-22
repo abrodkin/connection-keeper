@@ -1,0 +1,50 @@
+1. Установить необходимый пакет для установки PPP соединения:
+# sudo apt-get update
+# sudo apt-get install ppp 
+
+2. Скопировать скрипты в /home/pi/connection-keeper
+
+3. Перейти в папку со скриптами
+# cd /home/pi/connection-keeper
+
+4. Установить права на запуск скриптов (для простоты всех файлов в данном каталоге)
+# chmod a+x *
+
+5. Настройка модема
+# sudo ./sakis3gz --interactive
+-> Connect with 3G
+-> Установить APN для данного оператора сотовой связи
+-> More options
+-> Generate success report
+Сохранить значение поля "Variables" (эта строка за исключением "--interactive" используется для установки соединения в скрипте conneciton-keeper.sh).
+
+Например для модема Huawei E1550 и SIM-карты Megafon:
+=========
+Variables: --console --interactive --pppd APN="internet" USBDRIVER="option" MODEM="12d1:1001" 
+=========
+Фактически нужно выяснить значения APN, USBDRIVER и MODEM.
+
+-> Disconnect
+-> Exit
+
+6. Скопировать настройки, полученные выше в переменную "sakis3g_options" скрипта "conection-keeper.sh"
+
+7. Установить адрес основного шлюза для доступа в сеть Интернет в переменную "primary_gw" скрипта "conection-keeper.sh"
+
+8. Скопировать скрипт автозапуска в /etc/init.d/
+# sudo cp connection-keeper-startup.sh /etc/init.d/
+
+9. Проверить корректную работу скрипта автозапуска
+# sudo /etc/init.d/connection-keeper-startup.sh start
+# cat /var/log/messages
+
+Должны появиться записи типа:
+=========
+Dec 21 18:43:01 raspberrypi connection-keeper: Run connection checker...
+Dec 21 18:43:01 raspberrypi connection-keeper: Current connection [primary] is alive
+=========
+
+10. Установить скрипт автозапуска
+# sudo update-rc.d connection-keeper-startup.sh start 2 3 4 5
+
+11. Перезагрузить Raspberry Pi

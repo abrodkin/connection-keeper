@@ -15,7 +15,7 @@ CMD=connection-keeper.sh
 
 case "$1" in
     start)
-        echo "Starting konnection-keeper..."
+        echo "Starting connection-keeper..."
         $CMD | logger -t connection-keeper &
         ;;
     restart|reload|force-reload)
@@ -23,7 +23,7 @@ case "$1" in
         exit 3
         ;;
     stop)
-        echo "Stopping konnection-keeper..."
+        echo "Stopping connection-keeper..."
         killall $CMD
         ;;
     *)
